@@ -1,0 +1,34 @@
+version: '3'
+services:
+  node:
+    image: mhart/alpine-node:14
+    container_name: nodejs
+    restart: always
+    build: ./
+    ports:
+    - "3010:3010"
+    volumes:
+    - .:/app
+    - ./error.log:/usr/src/app/error.log
+
+services:
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./config/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+      - ./data/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      TZ: 'Asia/Hong_Kong'
+
+services:  
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongo:/data/db
+     depends_on:
+      - mysql
